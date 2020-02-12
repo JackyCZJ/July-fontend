@@ -1,6 +1,6 @@
 import React from "react"
 import { Card } from 'antd';
-
+import Config from 'Config'
 export default class ImgCard extends React.Component{
 
       render(){
@@ -10,8 +10,7 @@ export default class ImgCard extends React.Component{
             style={{ width: 240 , height: 240 }}
             cover={<img  src={this.props.src} />}
           >
-            <a style={{alignSelf: 'center',}}>{this.props.title}</a>
-          
+            <a style={{alignSelf: 'center',}} href={Config.baseURL+this.props.title}>{this.props.title}</a>
           </Card>
           )
       }

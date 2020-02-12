@@ -4,11 +4,11 @@ import {Row, Col} from "antd"
 import Banner from "./Banner"
 
 
-export default class Index extends React.Component{ 
+export default class Index extends React.Component{
     render(){
         return(
             <Row justify="center" >
-             <Banner></Banner>
+             <Banner/>
                <Col><Category /></Col>
             </Row>
         )

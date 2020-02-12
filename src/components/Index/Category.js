@@ -12,9 +12,7 @@ import Life from '../../img/Life.png'
 
 
 export default class Category extends React.Component {
-    state = {
 
-    }
     componentDidMount() {
 
     }
@@ -22,7 +20,7 @@ export default class Category extends React.Component {
     render() {
         return (
             <Col>
-            <Row  type="flex" justify="center"> 
+            <Row  type="flex" justify="center">
                 <h2>商品分类<Divider type="vertical"></Divider>Product Category</h2>
             </Row>
 
@@ -42,4 +40,4 @@ export default class Category extends React.Component {
 
         )
     }
-} 
+}

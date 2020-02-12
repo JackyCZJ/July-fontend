@@ -1,16 +1,22 @@
-import { combineReducers } from 'redux'
-import{LOGIN_REQUEST ,LOGIN_SUCCESS,LOGIN_FAILURE,LOGOUT } from './action'
+import { combineReducers } from "redux";
+import {
+  LOGIN_REQUEST,
+  LOGIN_SUCCESS,
+  LOGIN_FAILURE,
+  LOGOUT,
+  OrderCreate,
+  OrderDelete,
+  OrderComplete
+} from "./action";
 
-
-let user = JSON.parse(localStorage.getItem('user'));
+let user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { loggedIn: true, user } : {};
 
 export const rootReducer = combineReducers({
-    auth,
-    order,
-    picture,
-    cart
-})
+  auth,
+  order,
+
+});
 
 function auth(state = initialState, action) {
   switch (action.type) {
@@ -29,22 +35,19 @@ function auth(state = initialState, action) {
     case LOGOUT:
       return {};
     default:
-      return state
+      return state;
   }
 }
 
-function order(state= {},action){
-    switch (action.type){
+function order(state = {}, action) {
+  switch (action.type) {
+    case OrderCreate:
 
-    }
+    case OrderDelete:
+
+    case OrderComplete:
+    default:
+      return state;
+  }
 }
 
-function picture(state= {},action){
-
-}
-
-function cart(state= {},action){
-    switch (action.type){
-
-    }
-}

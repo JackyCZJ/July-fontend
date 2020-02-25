@@ -29,12 +29,12 @@ function auth(state = initialState, action) {
   switch (action.type) {
     case LOGIN_REQUEST:
       return {
-        loggingIn: true,
+        isLoggedIn: true,
         user: action.user
       };
     case LOGIN_SUCCESS:
       return {
-        loggedIn: true,
+        isLoggedIn: true,
         user: action.user
       };
     case LOGIN_FAILURE:

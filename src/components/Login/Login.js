@@ -8,9 +8,9 @@ import { connect } from 'react-redux';
 
 class Login extends React.Component {
     checkAuth(){
-       let user =  JSON.parse(localStorage.getItem("user"))
-       if (user.username !== undefined&&user.token !==undefined ){
-           history.goBack("/")
+       let user =  this.props.user
+       if (user) {
+           history.goBack()
        }
     }
     constructor(props){
@@ -89,10 +89,8 @@ class Login extends React.Component {
 
 function mapStateToProps(state) {
     const { loggingIn } = state.auth;
-    const { alertReducer } = state.alertReducer;
     return {
         loggingIn,
-        alertReducer
     };
 }
 const NewLoginForm = Form.create({ name: 'normal_login' })(Login);

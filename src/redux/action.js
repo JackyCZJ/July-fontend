@@ -23,10 +23,10 @@ export const CLEAR = 'CLEAR'
 
 export function authHeader() {
   // return authorization header with jwt token
-  let token = JSON.parse(localStorage.getItem("token"));
-
+  let token = JSON.parse(localStorage.getItem("user")).token;
+  console.log(token)
   if (token && token.token) {
-    return { Authorization: "Bearer " + token.token };
+    return { Authorization: "Bearer " + token };
   } else {
     return {};
   }
@@ -84,17 +84,18 @@ export function login(user) {
     fetch(Config.baseURL+"/user/login",{ method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user)
-    }).then(
-        res=>res.json()
-    ).then(res=>{
-      dispatch(success(res))
-      res.username = user.username
-      localStorage.setItem("user",JSON.stringify(res))
-      history.goBack()
-    }).catch(e=>{
-      dispatch(failure(e.toString()))
-      dispatch(alertError(e.toString()))
-      console.log(e)
+    }).then(handleResponse).
+    then(res=>res.json())
+        .then(res=>{
+        dispatch(success(res))
+        res.username = user.username
+        localStorage.setItem("user",JSON.stringify(res))
+        history.goBack()
+        }).catch(e=>{
+        dispatch(failure(e))
+        dispatch(alertError(e))
+        alert(e)
+
     })
     function request(user) { return { type: LOGIN_REQUEST, user } }
     function success(user) { return { type: LOGIN_SUCCESS, user } }
@@ -120,7 +121,20 @@ function alertInfo(message) {
 
 
 export function logout() {
-  // remove user from local storage to log user out
+  // remove user from local storage to log user
+  let u = localStorage.getItem("user")
+  if (u) {
+    fetch(Config.baseURL+"/user/logout",
+        {
+          method: 'POST',
+          headers: authHeader(),
+          body: JSON.stringify(u)}).then(res=>{
+      if (res.ok){
+        console.log("logout!")
+      }
+    })
+  }
+
   localStorage.removeItem("user");
   return {
     type: LOGOUT

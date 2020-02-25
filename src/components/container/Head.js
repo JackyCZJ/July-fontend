@@ -2,6 +2,9 @@ import React from "react";
 import { Menu } from 'antd';
 import {  Link } from 'react-router-dom';
 import {history} from "../../redux/unity";
+import { logout }  from "../../redux/action"
+
+import {connect} from "react-redux";
 
 const { SubMenu } = Menu;
 
@@ -20,14 +23,15 @@ class Head extends React.Component{
 
     checkAuth(){
         let user =  JSON.parse(localStorage.getItem("user"))
-        if (user.username !== undefined&&user.token !==undefined ){
-            this.setState({
-                username : user.username,
-                isLoggedIn : true
-            })
+        if (user) {
+            if (user.username && user.token){
+                this.setState({
+                    username : user.username,
+                    isLoggedIn : true
+                })
+            }
         }
     }
-
 
     handleClick = (e)=>{
         this.setState({
@@ -35,6 +39,16 @@ class Head extends React.Component{
         })
     };
 
+    logout = ()=>{
+        const  {dispatch} = this.props
+        dispatch(logout())
+        this.setState({
+            username : "游客",
+            isLoggedIn : false
+        })
+        // window.location.reload();
+
+    }
     render(){
         return (
 
@@ -60,7 +74,7 @@ class Head extends React.Component{
                             <Menu.Item key="user-change-password" >
                                 更改密码
                             </Menu.Item>
-                            <Menu.Item>
+                            <Menu.Item onClick={this.logout}>
                                 登出
                             </Menu.Item>
                         </SubMenu>
@@ -71,4 +85,11 @@ class Head extends React.Component{
     }
 }
 
-export default Head
+function mapStateToProps(state) {
+    const { loggingIn } = state.auth;
+    return {
+        loggingIn,
+    };
+}
+
+export default connect(mapStateToProps)(Head)

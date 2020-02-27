@@ -11,7 +11,7 @@ import {
   IndexItemFail,
   SUCCESS,
   ERROR,
-  CLEAR
+  CLEAR, FETCH_INDEX_PENDING, FETCH_INDEX_SUCCESS, FETCH_INDEX_ERROR
 } from "./action";
 
 let user = JSON.parse(localStorage.getItem("user"));
@@ -64,9 +64,14 @@ function order(state = {}, action) {
 
 function index(state = indexState , action) {
   switch (action.type) {
-    case IndexItemSuccess:
-      return Object.assign({}, state, { number: state.number })
-    case IndexItemFail:
+    case FETCH_INDEX_PENDING:
+      return {
+      }
+    case FETCH_INDEX_SUCCESS:
+      return {
+        lists: action.lists
+      }
+    case FETCH_INDEX_ERROR:
       return {}
     default:
       return state

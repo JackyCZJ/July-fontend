@@ -4,9 +4,14 @@ import {Link} from "react-router-dom";
 import { login }  from "../../redux/action"
 import {history} from "../../redux/unity"
 import { connect } from 'react-redux';
+import Config from 'Config'
 
 
 class Login extends React.Component {
+    componentDidMount() {
+        document.title = "登录"+Config.title
+    }
+
     checkAuth(){
        let user =  this.props.user
        if (user) {

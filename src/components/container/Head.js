@@ -45,13 +45,12 @@ class Head extends React.Component{
         this.setState({
             username : "游客",
             isLoggedIn : false
-        })
-        // window.location.reload();
+        });
+        window.location.reload();
 
     }
     render(){
         return (
-
                 <Menu onClick={this.handleClick} theme="light"   style={{ backgroundColor:'rgba(255,255,255, 0.1)', lineHeight: '64px' }}
                 selectedKeys={[this.state.current]} mode="horizontal">
                 <Menu.Item key="index">

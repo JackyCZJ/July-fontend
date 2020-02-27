@@ -9,7 +9,8 @@ import {indexList} from "../../redux/action";
 class Broad extends React.Component{
 
     componentDidMount() {
-        indexList()
+        const { dispatch } = this.props;
+        dispatch(indexList())
 
     }
 
@@ -17,11 +18,18 @@ class Broad extends React.Component{
         const { lists } = this.props;
         return(
             <List
+                grid={{
+                    gutter: 16,
+                    xs: 2,
+                    sm: 2,
+                    md: 3,
+                    lg: 4,
+                    xl: 5,
+                }}
                 dataSource={lists}
-                grid={{ gutter: 16, column: 4 }}
                 renderItem	={item=>(
                 <List.Item>
-                    <Item title={item.title} price={item.price} src={item.src} />
+                    <Item title={item.name} price={item.price} src={item.image_uri} />
                 </List.Item>
             )}
             />
@@ -37,8 +45,8 @@ const getList = state => {
 
 Broad.prototypes = {
     lists: PropTypes.arrayOf(PropTypes.shape({
-        title : PropTypes.string.required,
-        src : PropTypes.string.required,
+        name : PropTypes.string.required,
+        image_uri : PropTypes.string.required,
         price : PropTypes.number.required
     }).isRequired).isRequired
 }

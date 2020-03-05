@@ -1,5 +1,5 @@
 import Config from 'Config'
-import {history}  from './unity';
+import {history}  from '../unity';
 export const LOGIN_REQUEST = "USERS_LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "USERS_LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "USERS_LOGIN_FAILURE";
@@ -24,38 +24,11 @@ const apiurl = Config.baseURL+"/api/v1"
 export function authHeader() {
   // return authorization header with jwt token
   let token = JSON.parse(localStorage.getItem("user"));
-  console.log(token)
-
   if (token) {
     return { Authorization : "Bearer " + token.token };
   } else {
     return {};
   }
-}
-
-
-function requestLogin(creds) {
-  return {
-    type: LOGIN_REQUEST,
-    isAuthenticated: false,
-    creds
-  };
-}
-
-function receiveLogin(user) {
-  return {
-    type: LOGIN_SUCCESS,
-    isAuthenticated: true,
-    id_token: user.id_token
-  };
-}
-
-function loginError(message) {
-  return {
-    type: LOGIN_FAILURE,
-    isAuthenticated: false,
-    message
-  };
 }
 
 
@@ -68,6 +41,7 @@ export function login(user) {
     }).then(handleResponse)
         .then(res=>{
           dispatch(success(res));
+          dispatch(alertInfo(res))
           res.username = user.username;
           localStorage.setItem("user",JSON.stringify(res));
           history.go("/")
@@ -87,14 +61,16 @@ export function login(user) {
 function alertError(message) {
     return {
       type: ERROR,
-      message : message
+      message : message,
+      show: true
     }
 }
 
 function alertInfo(message) {
   return {
     type: SUCCESS,
-    message: message
+    message: message,
+    show: true
   }
 }
 
@@ -122,19 +98,17 @@ export function logout() {
 }
 
 export function indexList() {
-  console.log("now I'm here");
   return dispatch =>{
     dispatch(IndexGetPending());
-    console.log("now I'm there");
     fetch(apiurl+"/Goods/index",{
       method: 'GET',
       headers: authHeader(),
     }).then(handleResponse)
         .then((res)=>{
           dispatch(IndexGetSuccess(res.data))
+          dispatch(alertInfo("index get success"))
       }).catch(e=>{
           dispatch(IndexGetFail(e))
-          console.log(e)
       })
 
   }

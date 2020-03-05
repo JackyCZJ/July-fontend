@@ -1,9 +1,9 @@
 import React from "react";
 import { connect } from 'react-redux' // 引入connect
 import Item from "./Item";
-import {List,message} from 'antd'
+import {List} from 'antd'
 import PropTypes from 'prop-types';
-import {indexList} from "../../redux/action";
+import {indexList} from "../../redux/action/action";
 
 
 class Broad extends React.Component{

@@ -1,5 +1,4 @@
 /* config-overrides.js */
-import 'react-quill/dist/quill.snow.css';
 const {override, addWebpackExternals} = require("customize-cra");
 module.exports = override(
     addWebpackExternals({

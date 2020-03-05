@@ -1,7 +1,7 @@
 import React from "react";
 import {Form, Icon, Input, Button} from 'antd';
 import {Link} from "react-router-dom";
-import { login }  from "../../redux/action"
+import { login }  from "../../redux/action/action"
 import {history} from "../../redux/unity"
 import { connect } from 'react-redux';
 import Config from 'Config'
@@ -29,6 +29,7 @@ class Login extends React.Component {
         this.handleChange = this.handleChange.bind(this);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+
 
     }
 

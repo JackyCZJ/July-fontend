@@ -12,7 +12,7 @@ import {
   SUCCESS,
   ERROR,
   CLEAR, FETCH_INDEX_PENDING, FETCH_INDEX_SUCCESS, FETCH_INDEX_ERROR
-} from "./action";
+} from "../action/action";
 
 let user = JSON.parse(localStorage.getItem("user"));
 const initialState = user ? { loggedIn: true, user } : {};
@@ -82,13 +82,15 @@ function alertReducer(state = {}, action) {
   switch (action.type) {
     case SUCCESS:
       return {
-        type: 'alert-success',
-        message: action.message
+        type: 'success',
+        message: action.message,
+        show : true
       };
     case ERROR:
       return {
-        type: 'alert-danger',
-        message: action.message
+        type: 'error',
+        message: action.message,
+        show : true
       };
     case CLEAR:
       return {};

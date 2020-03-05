@@ -29,7 +29,7 @@ class Broad extends React.Component{
                 dataSource={lists}
                 renderItem	={item=>(
                 <List.Item>
-                    <Item title={item.name} price={item.price} src={item.image_uri} />
+                    <Item title={item.name} id={item._id} price={item.price} src={item.image_uri} />
                 </List.Item>
             )}
             />
@@ -47,7 +47,8 @@ Broad.prototypes = {
     lists: PropTypes.arrayOf(PropTypes.shape({
         name : PropTypes.string.required,
         image_uri : PropTypes.string.required,
-        price : PropTypes.number.required
+        price : PropTypes.number.required,
+        id : PropTypes.number.required
     }).isRequired).isRequired
 }
 

@@ -46,8 +46,6 @@ class Head extends React.Component{
             username : "游客",
             isLoggedIn : false
         });
-        window.location.reload();
-
     }
     render(){
         return (

@@ -9,9 +9,10 @@ import {
   OrderComplete,
   IndexItemSuccess,
   IndexItemFail,
+  INFO_GET_SUCCESS,
   SUCCESS,
   ERROR,
-  CLEAR, FETCH_INDEX_PENDING, FETCH_INDEX_SUCCESS, FETCH_INDEX_ERROR
+  CLEAR, FETCH_INDEX_PENDING, FETCH_INDEX_SUCCESS, FETCH_INDEX_ERROR, INFO_GET_PENDING
 } from "../action/action";
 
 let user = JSON.parse(localStorage.getItem("user"));
@@ -21,6 +22,7 @@ const indexState = {}
 export const rootReducer = combineReducers({
   auth,
   order,
+  item,
   index,
   alertReducer
 });
@@ -82,18 +84,35 @@ function alertReducer(state = {}, action) {
   switch (action.type) {
     case SUCCESS:
       return {
-        type: 'success',
+        type: action.type,
         message: action.message,
-        show : true
+        show : action.show
       };
     case ERROR:
       return {
-        type: 'error',
+        type: action.type,
         message: action.message,
-        show : true
+        show : action.show
       };
     case CLEAR:
       return {};
+    default:
+      return state
+  }
+}
+
+function item(state={},action) {
+  switch (action.type) {
+    case INFO_GET_SUCCESS:
+      return{
+        data: action.data,
+        loading: false,
+      }
+    case INFO_GET_PENDING:
+      return {
+        data : {},
+        loading : true
+      }
     default:
       return state
   }

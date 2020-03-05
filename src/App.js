@@ -8,15 +8,17 @@ import {
 import Head from "./components/container/Head";
 import Index from "./components/Index/Index";
 import Shop from "./components/Shop/shop";
-
-import { Layout } from "antd";
+import Goods from "./components/Goods/information";
+import {Layout} from "antd";
 import NewLoginForm from "./components/Login/Login";
+import Message from "./components/Message/message"
 const { Header, Content, Footer } = Layout;
+
 
 function App() {
   return (
-
     <Router>
+        <Message />
       <Layout style={{ backgroundColor: "rgba(182,215,222,0.8)" }}>
         <Header
           style={{
@@ -34,7 +36,8 @@ function App() {
           <Route path="/shop" component={Shop} />
           {/* <Route path="/user:id" component={User} /> */}
             <Route path="/login" component={NewLoginForm} />
-          <Redirect from="*" to="/" />
+            <Route path="/detail/:id" component={Goods} />
+            <Redirect from="*" to="/" />
         </Content>
 
         <Footer style={{ textAlign: "center" }}>Jacky©2020</Footer>

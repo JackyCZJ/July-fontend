@@ -1,7 +1,7 @@
 import React from "react";
 import {Form, Icon, Input, Button} from 'antd';
 import {Link} from "react-router-dom";
-import { login }  from "../../redux/action/action"
+import { login,getUrlParam }  from "../../redux/action/action"
 import {history} from "../../redux/unity"
 import { connect } from 'react-redux';
 import Config from 'Config'
@@ -24,7 +24,8 @@ class Login extends React.Component {
         this.state = {
             username : "",
             password : "",
-            isLoggedIn: false
+            isLoggedIn: false,
+            redirect: getUrlParam('redirect') || '/',
         }
         this.handleChange = this.handleChange.bind(this);
 
@@ -46,7 +47,7 @@ class Login extends React.Component {
             const { dispatch } = this.props;
 
             if (!err) {
-                dispatch(login({username: values.username,password: values.password}))
+                dispatch(login({username: values.username,password: values.password},this.state.redirect))
             }
         });
     };

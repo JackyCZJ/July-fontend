@@ -1,5 +1,7 @@
 import Config from 'Config'
 import {history}  from '../unity';
+import types from "less/lib/less/functions/types";
+import {func} from "prop-types";
 export const LOGIN_REQUEST = "USERS_LOGIN_REQUEST";
 export const LOGIN_SUCCESS = "USERS_LOGIN_SUCCESS";
 export const LOGIN_FAILURE = "USERS_LOGIN_FAILURE";
@@ -15,11 +17,29 @@ export const IndexItemFail = "INDEX_GET_FAIL"
 export const FETCH_INDEX_PENDING = 'FETCH_INDEX_PENDING';
 export const FETCH_INDEX_SUCCESS = 'FETCH_INDEX_SUCCESS';
 export const FETCH_INDEX_ERROR = 'FETCH_INDEX_ERROR';
-export const SUCCESS ='SUCCESS'
-export const ERROR = 'ERROR'
-export const CLEAR = 'CLEAR'
+export const INFO_GET_SUCCESS = "INFO_GET_SUCCESS"
+export const INFO_GET_PENDING = "INFO_GET_PENDING"
+export const SUCCESS ='success'
+export const ERROR = 'error'
+export const CLEAR = 'destroy'
 
 const apiurl = Config.baseURL+"/api/v1"
+
+function alertError(message) {
+  return {
+    type: ERROR,
+    message : message,
+    show: true
+  }
+}
+
+function alertInfo(message) {
+  return {
+    type: SUCCESS,
+    message: message,
+    show: true
+  }
+}
 
 export function authHeader() {
   // return authorization header with jwt token
@@ -32,7 +52,7 @@ export function authHeader() {
 }
 
 
-export function login(user) {
+export function login(user,redirect) {
   return dispatch =>{
     dispatch(request(user));
     fetch(Config.baseURL+"/user/login",{ method: 'POST',
@@ -41,10 +61,14 @@ export function login(user) {
     }).then(handleResponse)
         .then(res=>{
           dispatch(success(res));
-          dispatch(alertInfo(res))
+          dispatch(alertInfo("登录成功"))
           res.username = user.username;
           localStorage.setItem("user",JSON.stringify(res));
-          history.go("/")
+          if (redirect === undefined){
+            redirect = "/"
+            history.go(redirect)
+          }
+          history.push(redirect)
         })
         .catch(e=>{
           dispatch(failure(e));
@@ -58,23 +82,6 @@ export function login(user) {
 
 }
 
-function alertError(message) {
-    return {
-      type: ERROR,
-      message : message,
-      show: true
-    }
-}
-
-function alertInfo(message) {
-  return {
-    type: SUCCESS,
-    message: message,
-    show: true
-  }
-}
-
-
 
 export function logout() {
   // remove user from local storage to log user
@@ -85,9 +92,6 @@ export function logout() {
           method: 'POST',
           headers: authHeader(),
           body: JSON.stringify(u)}).then(res=>{
-      if (res.ok){
-        console.log("logout!")
-      }
     })
   }
 
@@ -106,7 +110,6 @@ export function indexList() {
     }).then(handleResponse)
         .then((res)=>{
           dispatch(IndexGetSuccess(res.data))
-          dispatch(alertInfo("index get success"))
       }).catch(e=>{
           dispatch(IndexGetFail(e))
       })
@@ -119,16 +122,45 @@ export function indexList() {
 
   function IndexGetFail(e) {return {type: FETCH_INDEX_ERROR, error : e}}
 }
-export function success(message) {
-  return { type: SUCCESS, message };
+
+
+
+export function GoodsInfo(id){
+  return dispatch =>{
+    dispatch(infoGetFetching())
+    fetch(apiurl+"/Goods/"+id,{
+      method: "GET"
+    },).then(handleResponse)
+        .then(res=>{
+          dispatch(infoGetSuccess(res.data))
+        }).catch(e=>{
+          dispatch(alertError(e))
+    })
+  }
+
+  function infoGetFetching(){
+    return {
+      type: INFO_GET_PENDING,
+      loading : true
+    }
+  }
+  function infoGetSuccess(data) {
+    return {
+      type: INFO_GET_SUCCESS,
+      data : data,
+      loading : false
+    }
+  }
+}
+function doLogin() {
+    window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
 }
 
-export function error(message) {
-  return { type: ERROR, message };
-}
-
-export function clear() {
-  return { type: CLEAR };
+export function getUrlParam(name) {
+  let queryString = window.location.search.split('?')[1] || '',
+      reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"),
+      result = queryString.match(reg)
+  return result ? decodeURIComponent(result[2]) : null
 }
 
 function handleResponse(response) {
@@ -137,7 +169,7 @@ function handleResponse(response) {
     if (!response.ok) {
       if (response.status === 401) {
         // auto logout if 401 response returned from api
-        logout();
+        doLogin()
       }
 
       const error = (data && data.message) || response.statusText;

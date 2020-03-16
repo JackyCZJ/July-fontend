@@ -179,3 +179,10 @@ function handleResponse(response) {
     return data;
   });
 }
+
+export function autoComplete(value) {
+    return fetch(apiurl+"/Goods/suggestion/"+value,{
+      method:"GET",
+      headers: authHeader(),
+    }).then(handleResponse)
+}

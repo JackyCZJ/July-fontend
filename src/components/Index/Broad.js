@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux' // 引入connect
 import Item from "./Item";
-import {List} from 'antd'
+import {Divider, List} from 'antd'
 import PropTypes from 'prop-types';
 import {indexList} from "../../redux/action/action";
 
@@ -17,6 +17,7 @@ class Broad extends React.Component{
     render() {
         const { lists } = this.props;
         return(
+            <>
             <List
                 grid={{
                     gutter: 16,
@@ -24,7 +25,7 @@ class Broad extends React.Component{
                     sm: 2,
                     md: 3,
                     lg: 4,
-                    xl: 5,
+                    xl: 4,
                 }}
                 dataSource={lists}
                 renderItem	={item=>(
@@ -33,6 +34,7 @@ class Broad extends React.Component{
                 </List.Item>
             )}
             />
+            </>
         )
     }
 }

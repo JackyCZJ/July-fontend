@@ -3,7 +3,7 @@ import { Menu } from 'antd';
 import {  Link } from 'react-router-dom';
 import {history} from "../../redux/unity";
 import { logout }  from "../../redux/action/action"
-
+import Utils from "../../utils/utils";
 import {connect} from "react-redux";
 
 const { SubMenu } = Menu;
@@ -15,10 +15,12 @@ class Head extends React.Component{
     state =  {
         username:"游客",
         isLoggedIn : false,
-        current: "index",
     };
     componentDidMount() {
         this.checkAuth()
+        this.setState({
+            current : window.localStorage.getItem("current")?window.localStorage.getItem("current"):"index"
+        })
     }
 
     checkAuth(){
@@ -34,6 +36,7 @@ class Head extends React.Component{
     }
 
     handleClick = (e)=>{
+        window.localStorage.setItem("current",e.key)
         this.setState({
             current : e.key
         })

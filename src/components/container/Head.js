@@ -1,9 +1,7 @@
 import React from "react";
 import { Menu } from 'antd';
 import {  Link } from 'react-router-dom';
-import {history} from "../../redux/unity";
 import { logout }  from "../../redux/action/action"
-import Utils from "../../utils/utils";
 import {connect} from "react-redux";
 
 const { SubMenu } = Menu;

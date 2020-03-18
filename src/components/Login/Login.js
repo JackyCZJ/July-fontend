@@ -17,6 +17,7 @@ class Login extends React.Component {
         this.state = {
             redirect: getUrlParam('redirect') || '/',
         }
+        this.onFinish = this.onFinish.bind(this);
     }
 
     formRef = React.createRef();
@@ -36,15 +37,15 @@ class Login extends React.Component {
     render() {
 
         return (
-            <Form onFinish={this.onFinish} ref={this.formRef} name="Login" style={{width:"30%", position: 'absolute', left: '50%', top: '30%',
+            <Form onFinish={this.onFinish} ref={this.formRef} name="Login" style={{ position: 'absolute', left: '50%', top: '30%',
                 transform: 'translate(-50%, -50%)' }}  className="login-form">
-                <Form.Item name={"username"} rules={[{ required: true, message: 'Please input your username!' }]}>
+                <Form.Item name={"username"} rules={[{ required: true, message: '请输入用户名' }]}>
                     <Input
                         prefix={<UserOutlined />}
                         placeholder="用户名或邮箱"
                     />
                 </Form.Item>
-                <Form.Item name={"password"} rules={[{ required: true, message: 'Please input your Password!' }]}>
+                <Form.Item name={"password"} rules={[{ required: true, message: '请输入密码' }]}>
                     <Input
                         prefix={<LockOutlined />}
                         type="password"
@@ -55,7 +56,7 @@ class Login extends React.Component {
                     <Link className="login-form-forgot"  to={"/forgetPassword"}>
                         忘记密码？
                     </Link>
-                    <Button type="primary" htmlType="submit" className="login-form-button">
+                    <Button type="primary" htmlType="submit"  className="login-form-button" >
                         登录
                     </Button>
                     <Link to={"/SignUp"}>注册</Link>

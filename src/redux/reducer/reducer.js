@@ -12,7 +12,13 @@ import {
   INFO_GET_SUCCESS,
   SUCCESS,
   ERROR,
-  CLEAR, FETCH_INDEX_PENDING, FETCH_INDEX_SUCCESS, FETCH_INDEX_ERROR, INFO_GET_PENDING
+  CLEAR,
+  FETCH_INDEX_PENDING,
+  FETCH_INDEX_SUCCESS,
+  FETCH_INDEX_ERROR,
+  INFO_GET_PENDING,
+  REGISTER_REQUEST,
+  REGISTER_SUCCESS, REGISTER_FAILURE
 } from "../action/action";
 
 let user = JSON.parse(localStorage.getItem("user"));
@@ -22,6 +28,7 @@ const indexState = {}
 export const rootReducer = combineReducers({
   auth,
   order,
+  registration,
   item,
   index,
   alertReducer
@@ -75,6 +82,25 @@ function index(state = indexState , action) {
       }
     case FETCH_INDEX_ERROR:
       return {}
+    default:
+      return state
+  }
+}
+
+function registration(state = {}, action) {
+  switch (action.type) {
+    case REGISTER_REQUEST:
+      return{
+
+      }
+    case REGISTER_SUCCESS:
+      return {
+        user:action.user
+      }
+    case REGISTER_FAILURE:
+      return {
+
+      }
     default:
       return state
   }

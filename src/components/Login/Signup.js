@@ -1,57 +1,16 @@
-import React, { useState } from "react";
-import {
-  Form,
-  Input,
-  Tooltip,
-  Cascader,
-  Select,
-  Row,
-  Col,
-  Checkbox,
-  Button,
-  AutoComplete
-} from "antd";
+import React from "react";
+import {Button, Cascader, Checkbox, Form, Input, Select, Tooltip,} from "antd";
+import options from "./AddressOptions";
+import {checkUsername,Register} from "../../redux/action/action";
+import {history} from "../../redux/unity";
+import {connect} from "react-redux";
 
 const { Option } = Select;
-const AutoCompleteOption = AutoComplete.Option;
-const residences = [
-  {
-    value: "zhejiang",
-    label: "Zhejiang",
-    children: [
-      {
-        value: "hangzhou",
-        label: "Hangzhou",
-        children: [
-          {
-            value: "xihu",
-            label: "West Lake"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    value: "jiangsu",
-    label: "Jiangsu",
-    children: [
-      {
-        value: "nanjing",
-        label: "Nanjing",
-        children: [
-          {
-            value: "zhonghuamen",
-            label: "Zhong Hua Men"
-          }
-        ]
-      }
-    ]
-  }
-];
+const residences = options;
 const formItemLayout = {
   labelCol: {
     xs: {
-      span: 24
+      span: 12
     },
     sm: {
       span: 8
@@ -59,17 +18,17 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: {
-      span: 24
+      span: 12
     },
     sm: {
-      span: 16
+      span: 8
     }
   }
 };
 const tailFormItemLayout = {
   wrapperCol: {
     xs: {
-      span: 24,
+      span: 12,
       offset: 0
     },
     sm: {
@@ -79,12 +38,24 @@ const tailFormItemLayout = {
   }
 };
 
-const Registration = () => {
+const Registration = ({dispatch}) => {
   const [form] = Form.useForm();
 
   const onFinish = values => {
-    console.log("Received values of form: ", values);
-  };
+    console.log(values)
+    dispatch(Register(values))
+  }
+
+  async function check (values) {
+    return await checkUsername(values)
+  }
+  const checkAuth=()=>{
+    let user =  localStorage.getItem("user")
+    if (user) {
+      history.go("/")
+    }
+  }
+  checkAuth()
 
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
@@ -98,22 +69,6 @@ const Registration = () => {
       </Select>
     </Form.Item>
   );
-  const [autoCompleteResult, setAutoCompleteResult] = useState([]);
-
-  const onWebsiteChange = value => {
-    if (!value) {
-      setAutoCompleteResult([]);
-    } else {
-      setAutoCompleteResult(
-        [".com", ".org", ".net"].map(domain => `${value}${domain}`)
-      );
-    }
-  };
-
-  const websiteOptions = autoCompleteResult.map(website => ({
-    label: website,
-    value: website
-  }));
   return (
     <Form
       {...formItemLayout}
@@ -121,22 +76,21 @@ const Registration = () => {
       name="register"
       onFinish={onFinish}
       initialValues={{
-        residence: ["zhejiang", "hangzhou", "xihu"],
         prefix: "86"
       }}
       scrollToFirstError
     >
       <Form.Item
         name="email"
-        label="E-mail"
+        label="邮箱"
         rules={[
           {
             type: "email",
-            message: "The input is not valid E-mail!"
+            message: "并非是正确的Email地址!"
           },
           {
             required: true,
-            message: "Please input your E-mail!"
+            message: "请输入你的Email地址!"
           }
         ]}
       >
@@ -145,11 +99,11 @@ const Registration = () => {
 
       <Form.Item
         name="password"
-        label="Password"
+        label="密码"
         rules={[
           {
             required: true,
-            message: "Please input your password!"
+            message: "请输入密码!"
           }
         ]}
         hasFeedback
@@ -159,13 +113,13 @@ const Registration = () => {
 
       <Form.Item
         name="confirm"
-        label="Confirm Password"
+        label="确认密码"
         dependencies={["password"]}
         hasFeedback
         rules={[
           {
             required: true,
-            message: "Please confirm your password!"
+            message: "重复确认密码"
           },
           ({ getFieldValue }) => ({
             validator(rule, value) {
@@ -174,7 +128,7 @@ const Registration = () => {
               }
 
               return Promise.reject(
-                "The two passwords that you entered do not match!"
+                "两次密码并不匹配。"
               );
             }
           })
@@ -184,19 +138,35 @@ const Registration = () => {
       </Form.Item>
 
       <Form.Item
-        name="nickname"
+        name="username"
         label={
           <span>
-            Nickname&nbsp;
-            <Tooltip title="What do you want others to call you?"></Tooltip>
+            用户名&nbsp;
+            <Tooltip title="打算如何称呼您？"/>
           </span>
         }
         rules={[
           {
             required: true,
-            message: "Please input your nickname!",
+            message: "输入你的用户名!",
             whitespace: true
-          }
+          },
+          () => ({
+            validator(rule, value) {
+              if ((value.length<= 4)){
+                return Promise.reject(
+                    "用户名过短，请大于4个字节"
+                )
+              }
+              return  check(value).then(res=>{
+                if (res){
+                  return Promise.reject("用户名已存在")
+                } else{
+                  return Promise.resolve                }
+              })
+
+            }
+          })
         ]}
       >
         <Input />
@@ -204,7 +174,7 @@ const Registration = () => {
 
       <Form.Item
         name="residence"
-        label="Habitual Residence"
+        label="省市区"
         rules={[
           {
             type: "array",
@@ -213,12 +183,20 @@ const Registration = () => {
           }
         ]}
       >
+
         <Cascader options={residences} />
       </Form.Item>
-
+      <Form.Item name="address" label="详细地址" rules={[{
+        type:"string",
+        required: true,
+        message: "请输入详细地址"
+      }]
+      }>
+        <Input />
+      </Form.Item>
       <Form.Item
         name="phone"
-        label="Phone Number"
+        label="电话号码"
         rules={[
           {
             required: true,
@@ -234,49 +212,7 @@ const Registration = () => {
         />
       </Form.Item>
 
-      <Form.Item
-        name="website"
-        label="Website"
-        rules={[
-          {
-            required: true,
-            message: "Please input website!"
-          }
-        ]}
-      >
-        <AutoComplete
-          options={websiteOptions}
-          onChange={onWebsiteChange}
-          placeholder="website"
-        >
-          <Input />
-        </AutoComplete>
-      </Form.Item>
 
-      <Form.Item
-        label="Captcha"
-        extra="We must make sure that your are a human."
-      >
-        <Row gutter={8}>
-          <Col span={12}>
-            <Form.Item
-              name="captcha"
-              noStyle
-              rules={[
-                {
-                  required: true,
-                  message: "Please input the captcha you got!"
-                }
-              ]}
-            >
-              <Input />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Button>Get captcha</Button>
-          </Col>
-        </Row>
-      </Form.Item>
 
       <Form.Item
         name="agreement"
@@ -288,7 +224,7 @@ const Registration = () => {
         </Checkbox>
       </Form.Item>
       <Form.Item {...tailFormItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" >
           Register
         </Button>
       </Form.Item>
@@ -296,4 +232,6 @@ const Registration = () => {
   );
 };
 
-export default Registration;
+
+
+export default connect()(Registration);

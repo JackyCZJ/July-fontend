@@ -59,22 +59,21 @@ export function login(user,redirect) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(user)
     }).then(handleResponse)
+        .catch(e=>{
+          dispatch(alertError(e));
+          dispatch(failure(e));
+        })
         .then(res=>{
           dispatch(success(res));
           dispatch(alertInfo("登录成功"))
-          res.username = user.username;
           localStorage.setItem("user",JSON.stringify(res));
           if (redirect === undefined){
             redirect = "/"
             history.go(redirect)
           }
           history.push(redirect)
-        })
-        .catch(e=>{
-          dispatch(failure(e));
-          dispatch(alertError(e));
-          alert(e)
         });
+
     function request(user) { return { type: LOGIN_REQUEST, user } }
     function success(user) { return { type: LOGIN_SUCCESS, user } }
     function failure(error) { return { type: LOGIN_FAILURE, error } }
@@ -82,6 +81,29 @@ export function login(user,redirect) {
 
 }
 
+export function Register(value) {
+  return dispatch =>{
+    dispatch(request())
+    fetch(Config.baseURL+"/user/register",{
+      method:'POST',
+      headers:{ "Content-Type": "application/json"},
+      body: JSON.stringify(value)
+    }).then(res=>{
+      dispatch(success(res))
+      dispatch(alertInfo("注册成功"))
+      localStorage.setItem("user",JSON.stringify(res));
+      setTimeout(()=>{
+        history.push("/")
+      },3000)
+    }).catch(e=>{
+      dispatch(failure(e));
+      dispatch(alertError(e));
+    })
+  }
+  function request() { return { type: REGISTER_REQUEST, fetching:true } }
+  function success(user) { return { type: REGISTER_SUCCESS, user } }
+  function failure(error) { return { type: REGISTER_FAILURE, error } }
+}
 
 export function logout() {
   // remove user from local storage to log user
@@ -185,4 +207,11 @@ export function autoComplete(value) {
       method:"GET",
       headers: authHeader(),
     }).then(handleResponse)
+}
+
+export function checkUsername(value) {
+  return fetch(Config.baseURL+"/user/checkUsername/"+value.toString(),{method:"GET"}).then(handleResponse).then(res=>{
+    return res.data
+  })
+
 }

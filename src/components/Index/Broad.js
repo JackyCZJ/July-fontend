@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from 'react-redux' // 引入connect
 import Item from "./Item";
-import {Divider, List} from 'antd'
+import { List} from 'antd'
 import PropTypes from 'prop-types';
 import {indexList} from "../../redux/action/action";
 
